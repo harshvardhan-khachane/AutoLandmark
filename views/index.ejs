@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Interactive Google Map</title>
+  <style>
+    /* Styles remain the same */
+    /* Fullscreen map */
+    body, html, #map {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMjZXNOwbSoEtBg8-y3Cwo1J2u28TrxNA&callback=initMap"></script> -->
+  <script>
+    async function loadGoogleMapsScript() {
+        const response = await fetch('/api-key');
+        const data = await response.json();
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${data.key}&callback=initMap`;
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+    }
+
+    loadGoogleMapsScript();
+  </script>
+  <script src="scripts/map.js"></script>
+</head>
+<body>
+  <div id="map"></div>
+  <div id="nearby-places-container"></div>
+  <form id="hiddenForm" action="/submit" method="post">
+    <input type="hidden" name="latitude" />
+    <input type="hidden" name="longitude" />
+  </form>
+</body>
+</html>

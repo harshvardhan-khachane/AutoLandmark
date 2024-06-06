@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Response</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f9;
+      box-sizing: border-box;
+    }
+
+    .overlay-container {
+      position: relative;
+      min-height: 100vh; /* Ensures the container takes at least full viewport height */
+    }
+
+    .results-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 20px;
+      background-color: #fff;
+      max-width: 800px;
+      width: 80%; /* Adjust as needed */
+      height: 60%; /* Adjust as needed */
+      overflow-y: auto;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      box-sizing: border-box;
+    }
+    .result-item {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+    }
+    .result-item:last-child {
+      margin-bottom: 0;
+      border-bottom: none;
+    }
+    .result-img {
+      max-width: 100px;
+      height: auto;
+      margin-right: 20px;
+      border-radius: 8px;
+    }
+    .result-details {
+      flex: 1;
+    }
+    .result-name {
+      font-size: 18px;
+      margin: 0;
+    }
+    .result-address {
+      font-size: 14px;
+      color: #555;
+    }
+    .result-rating {
+      font-size: 14px;
+      color: #999;
+    }
+    .result-link {
+      text-decoration: none;
+      color: #007bff;
+      font-weight: bold;
+    }
+    .result-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="results-container">
+    <h2>Places Nearby</h2>
+    <% places.forEach(place => { %>
+      <div class="result-item">
+        <% if (place.photos && place.photos.length > 0) { %>
+          <% const landscapePhotos = place.photos.filter(photo => photo.width > photo.height); %>
+          <% if (landscapePhotos.length > 0) { %>
+            <% const bestFitPhoto = landscapePhotos.reduce((prev, current) => {
+              return prev.height > current.height ? prev : current;
+            }); %>
+            <img class="result-img" src="https://maps.googleapis.com/maps/api/place/photo?maxwidth=100&photoreference=<%= bestFitPhoto.photo_reference %>&key=<%= apiKey %>" alt="<%= place.name %>">
+          <% } %>
+        <% } %>
+        <div class="result-details">
+          <a class="result-link" href="https://www.google.com/maps/search/?api=1&query=<%= place.geometry.location.lat %>,<%= place.geometry.location.lng %>" target="_blank">
+            <h2 class="result-name"><%= place.name %></h2>
+          </a>
+          <p class="result-address"><%= place.vicinity %></p>
+          <p class="result-rating">Rating: <%= place.rating %> (Total Ratings: <%= place.user_ratings_total %>)</p>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</body>
+</html>
